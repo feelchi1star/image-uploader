@@ -8,12 +8,15 @@ export default function Home() {
   const [img, setImage] = React.useState<string | null>(null);
   const [dragStyle, setDragStyle] = React.useState<boolean>(false);
   const [iserror, setIsError] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
   const fileInput = React.useRef<HTMLInputElement>(null);
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = e.currentTarget.file.files[0];
     const formData = new FormData();
     formData.append("picture", data);
+    // setIsLoading(true);
   }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -23,17 +26,22 @@ export default function Home() {
   function uploadFile(availableFiles: FileList | null) {
     setIsError(false);
     if (availableFiles && availableFiles.length > 0) {
+      setIsLoading(true);
       const reader = new FileReader();
       reader.onload = (event) => {
         const result = event.target?.result;
         if (typeof result === "string") {
+          setIsLoading(false);
           setImage(result);
         }
       };
       reader.onerror = (event) => {
+        setIsLoading(false);
         console.error("Error reading file:", event.target?.error);
       };
+
       if (!availableFiles[0].type.startsWith("image/")) {
+        setIsLoading(false);
         setIsError(true);
         return;
       }
@@ -77,56 +85,71 @@ export default function Home() {
           >
             File should be Jpeg, Png, etc.
           </p>
-          <form
-            className="flex gap-3  flex-col justify-stretch"
-            onSubmit={handleSubmit}
-          >
-            <div className="h-56 relative w-full ">
-              {img ? (
-                <Image
-                  src={img}
-                  className="h-56"
-                  width={400}
-                  height={300}
-                  alt="Picture"
-                />
-              ) : (
-                <Image
-                  src={require("../public/undraw_upload_image_re_svxx.svg")}
-                  className="h-56"
-                  width={400}
-                  height={300}
-                  alt="Picture"
-                />
-              )}
-            </div>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              name="file"
-              accept="image/*"
-              className="hidden"
-              ref={fileInput}
-            />
-            <div className="flex gap-3">
-              <button
-                className="px-3 py-2 text-xs md:text-base bg-blue-600 text-white font-medium rounded-lg items-center hover:bg-blue-300 hover:text-yellow-100"
-                onClick={handleButtonClick}
-              >
-                Choose an Image
-              </button>
-              {img && (
+          {isLoading ? (
+            <SpinnerLoader />
+          ) : (
+            <form
+              className="flex gap-3  flex-col justify-stretch"
+              onSubmit={handleSubmit}
+            >
+              <div className="h-56 relative w-full ">
+                {img ? (
+                  <Image
+                    src={img}
+                    className="h-56"
+                    width={400}
+                    height={300}
+                    alt="Picture"
+                  />
+                ) : (
+                  <Image
+                    src={require("../public/undraw_upload_image_re_svxx.svg")}
+                    className="h-56"
+                    width={400}
+                    height={300}
+                    alt="Picture"
+                  />
+                )}
+              </div>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                name="file"
+                accept="image/*"
+                className="hidden"
+                ref={fileInput}
+              />
+              <div className="flex gap-3">
                 <button
                   className="px-3 py-2 text-xs md:text-base bg-blue-600 text-white font-medium rounded-lg items-center hover:bg-blue-300 hover:text-yellow-100"
-                  type="submit"
+                  onClick={handleButtonClick}
                 >
-                  Upload
+                  Choose an Image
                 </button>
-              )}
-            </div>
-          </form>
+                {img && (
+                  <button
+                    className="px-3 py-2 text-xs md:text-base bg-blue-600 text-white font-medium rounded-lg items-center hover:bg-blue-300 hover:text-yellow-100"
+                    type="submit"
+                  >
+                    Upload
+                  </button>
+                )}
+              </div>
+            </form>
+          )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function SpinnerLoader() {
+  return (
+    <div
+      className="mt-4 flex gap-3 justify-center items-center"
+      id="loadingIndicator"
+    >
+      <div className="spinner"></div> <span className="">Loading ...</span>
     </div>
   );
 }
