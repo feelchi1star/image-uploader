@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   if (
     !request.headers
       .get("x-feel-api")
-      ?.includes(`${process.env.NEXT_PUBLIC_KEYs}`)
+      ?.includes(`${process.env.NEXT_PUBLIC_KEY}`)
   ) {
     return NextResponse.json({
       success: true,
