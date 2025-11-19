@@ -7,7 +7,7 @@ export async function GET(
 ) {
   // return NextResponse.json([{}]);
 
-  return new NextResponse(JSON.stringify([{ message: "Hello" }]), {
+  return new NextResponse(JSON.stringify([{ message: "Hello World" }]), {
     status: 401,
     headers: {
       "Content-Type": "application/json",
