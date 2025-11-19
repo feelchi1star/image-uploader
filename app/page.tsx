@@ -209,7 +209,7 @@ export default function Home() {
                       className="px-3 py-2 text-xs md:text-base bg-blue-600 text-white font-medium rounded-lg items-center hover:bg-blue-300 hover:text-yellow-100"
                       onClick={handleButtonClick}
                     >
-                      Choose an Image
+                      Choose an Image - No Auto Update
                     </button>
                     {img && (
                       <button
